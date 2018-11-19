@@ -2,7 +2,7 @@ package server
 
 import "testing"
 
-func test_testableFunction(t *testing.T) {
+func Test_testableFunction(t *testing.T) {
 	sq := testableFunction(3)
 
 	if sq != 9 {
