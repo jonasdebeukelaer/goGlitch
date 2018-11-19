@@ -1,2 +1,3 @@
 # goGlitch
-redo glitchdump as a go server
+
+Redo glitchdump project but in go and make it live in a server
