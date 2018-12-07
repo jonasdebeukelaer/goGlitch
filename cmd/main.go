@@ -1,16 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+	"github.com/jonasdebeukelaer/goGlitch/api/server"
+)
+
+const (
+	port = ":8080"
 )
 
 func main() {
-	http.HandleFunc("/", defaultHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "test page")
+	server.Serve(port)
 }

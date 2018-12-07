@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'njfont-light';
+    src: url('/fonts/NJFont-Light.ttf') format('truetype');
+}
+
+body {
+    background-color: #202020;
+    color: #A9A9A9;
+    font-family: 'njfont-light';
+}
