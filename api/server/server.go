@@ -26,6 +26,7 @@ func Serve(port string) {
 	http.Handle("/fonts/", http.StripPrefix("/fonts/", http.FileServer(http.Dir("web/resources/fonts/"))))
 	http.Handle("/source_image/", http.StripPrefix("/source_image/", http.FileServer(http.Dir("uploads/"))))
 
+	fmt.Println("Running server on http://localhost" + port)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
@@ -59,6 +60,8 @@ func imageUploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer image.Close()
 
 	mimeType := handle.Header.Get("Content-Type")
+	fmt.Print("Uploading image ", handle.Filename, "...")
+
 	switch mimeType {
 	case "image/jpeg":
 		saveImage(w, image, handle)
@@ -67,8 +70,6 @@ func imageUploadHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		fmt.Println("file type ", mimeType, " not supported")
 	}
-
-	fmt.Print("Uploading image ", handle.Filename, "...")
 
 	http.Redirect(w, r, "/work?image="+handle.Filename, http.StatusSeeOther)
 }
