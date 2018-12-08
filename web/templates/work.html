@@ -10,12 +10,12 @@
         <h1>goGlitch v0.0.1</h1>
         
         <form action="/upload_image" enctype="multipart/form-data" method="POST">
-            <input type="text" name="caption" value="{{.Filename}}">
             <input type="file" name="pic" accept="image/*">
             <input type="submit">
         </form>
 
         <div>
+            <h2>{{.Filename}}</h2>
             <div class="image-container">
                 <img class="source-image" src="source_image/{{.Filename}}">
             </div>

@@ -7,11 +7,9 @@ import (
 	"mime/multipart"
 	"net/http"
 	"text/template"
-	"time"
 )
 
 type mainPageVariables struct {
-	Date string
 }
 
 type workPageVariables struct {
@@ -37,10 +35,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("template parsing error: %v", err)
 	}
 
-	now := time.Now()
-	testPageVariables := mainPageVariables{
-		Date: now.Format("01/01/2018 10:01:10"),
-	}
+	testPageVariables := mainPageVariables{}
 
 	err = t.Execute(w, testPageVariables)
 	if err != nil {
@@ -55,7 +50,6 @@ func imageUploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	fmt.Print("Uploading image ", r.Form["caption"], "...")
 
 	image, handle, err := r.FormFile("pic")
 	if err != nil {
@@ -73,6 +67,8 @@ func imageUploadHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		fmt.Println("file type ", mimeType, " not supported")
 	}
+
+	fmt.Print("Uploading image ", handle.Filename, "...")
 
 	http.Redirect(w, r, "/work?image="+handle.Filename, http.StatusSeeOther)
 }

@@ -8,10 +8,12 @@
     </head>
     <body>
         <h1>goGlitch v0.0.1</h1>
-        <p>The date is {{.Date}}</p>
+        <p>
+            welcome to goGlitch, where hopefully, in time, you will be able to use some tools I've created
+            for glitching some images
+        </p>
         
         <form action="/upload_image" enctype="multipart/form-data" method="POST">
-            <input type="text" name="caption">
             <input type="file" name="pic" accept="image/*">
             <input type="submit">
         </form>
