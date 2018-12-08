@@ -10,16 +10,24 @@ import (
 	"time"
 )
 
-type pageVariables struct {
+type mainPageVariables struct {
 	Date string
+}
+
+type workPageVariables struct {
+	Filename string
 }
 
 // Serve serves the server
 func Serve(port string) {
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/upload_image", imageUploadHandler)
+	http.HandleFunc("/work", workHandler)
+
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("web/css/"))))
 	http.Handle("/fonts/", http.StripPrefix("/fonts/", http.FileServer(http.Dir("web/resources/fonts/"))))
+	http.Handle("/source_image/", http.StripPrefix("/source_image/", http.FileServer(http.Dir("uploads/"))))
+
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
@@ -30,7 +38,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now()
-	testPageVariables := pageVariables{
+	testPageVariables := mainPageVariables{
 		Date: now.Format("01/01/2018 10:01:10"),
 	}
 
@@ -66,7 +74,24 @@ func imageUploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("file type ", mimeType, " not supported")
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/work?image="+handle.Filename, http.StatusSeeOther)
+}
+
+func workHandler(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("web/templates/work.html")
+	if err != nil {
+		log.Fatalf("work template parsing error: %v", err)
+	}
+
+	r.ParseForm()
+	workPageVariables := workPageVariables{
+		Filename: r.Form["image"][0],
+	}
+
+	err = t.Execute(w, workPageVariables)
+	if err != nil {
+		log.Fatalf("populating the template failed: %v", err)
+	}
 }
 
 func saveImage(w http.ResponseWriter, image multipart.File, handle *multipart.FileHeader) {

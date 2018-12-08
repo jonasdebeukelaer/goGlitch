@@ -8,3 +8,7 @@ body {
     color: #A9A9A9;
     font-family: 'njfont-light';
 }
+
+img {
+    width: 50%;
+}
