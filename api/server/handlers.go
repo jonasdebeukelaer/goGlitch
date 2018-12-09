@@ -99,3 +99,20 @@ func workHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("populating the template failed: %v", err)
 	}
 }
+
+func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	query := r.URL.Query()
+	_ = query
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"imageURL\": \"40430001.JPG\"}"))
+
+	fmt.Println(w)
+
+	fmt.Fprint(w)
+}
