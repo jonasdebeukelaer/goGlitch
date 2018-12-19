@@ -9,11 +9,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
         $.ajax({
             url: "http://localhost:8080/process_image", 
             type: "GET",
+            data: {"image": $.urlParam("image")},
             accepts: "json",
             success: function(xhr) {
                 var imageURL = xhr["imageURL"];
                 console.log(imageURL);
                 document.getElementById("processed-image").src="http://localhost:8080/processed_images/" + imageURL;
+                $("#processing").addClass("hidden");
+                $("#processed-image").removeClass("hidden");
+                console.log("processing complete");
             },
             error: function(xhr){
                 console.log(xhr)
@@ -21,9 +25,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
         });
 
-        $("#processing").addClass("hidden");
-        $("#processed-image").removeClass("hidden");
-        console.log("processing complete");
+        
     })
 
 

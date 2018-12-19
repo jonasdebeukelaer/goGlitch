@@ -8,6 +8,9 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"strings"
+
+	"github.com/jonasdebeukelaer/goGlitch/api/imageprocessing"
 )
 
 type mainPageVariables struct {
@@ -106,13 +109,17 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
-	_ = query
+	filename := r.URL.Query()["image"][0]
+
+	log.Println("running...")
+	err := imageprocessing.ProcessImage(filename)
+	if err != nil {
+		log.Printf("Error processing the image: %v", err)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"imageURL\": \"40430001.JPG\"}"))
+	w.Write([]byte("{\"imageURL\": \"" + strings.Split(filename, ".")[0] + "_processed.png\"}"))
 
-	fmt.Println(w)
-
+	log.Println("done!")
 	fmt.Fprint(w)
 }
