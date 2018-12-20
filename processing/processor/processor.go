@@ -37,7 +37,10 @@ func New(filename string) (processing.Process, error) {
 		sourceImgName:     imgName,
 	}
 
-	p.setSourceImage(filename)
+	err := p.setSourceImage(filename)
+	if err != nil {
+		return nil, err
+	}
 
 	return p, nil
 }
