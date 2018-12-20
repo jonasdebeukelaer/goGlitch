@@ -28,6 +28,14 @@ func Test_initImageProcess(t *testing.T) {
 	}
 }
 
+func Test_ErrorOnNewIfImageNotExist(t *testing.T) {
+	testNoneExistantImageFilename := "storage/doesnt/exist.here"
+	_, err := New(testNoneExistantImageFilename)
+	if err == nil {
+		t.Fatal("No error returned trying to load non-existant image")
+	}
+}
+
 func Test_GetSourceImg(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
@@ -81,5 +89,45 @@ func Test_ProcessAndRetrieveImage(t *testing.T) {
 	_, err = p.GetProcessedImageFilename()
 	if err != nil {
 		t.Fatalf("Could not get processed image filename: %v", err)
+	}
+}
+
+func Test_CantProcessimageTwice(t *testing.T) {
+	p, err := New(testImageFilename)
+	if err != nil {
+		t.Fatalf("Error create new image process: %v", err)
+	}
+
+	err = p.SetEffect(processing.EffectLignify)
+	if err != nil {
+		t.Fatalf("Could not set the effect: %v", err)
+	}
+
+	err = p.ProcessImage()
+	if err != nil {
+		t.Fatalf("Could not process image: %v", err)
+	}
+
+	err = p.ProcessImage()
+	if err == nil {
+		t.Fatalf("Able to run processing twice")
+	}
+
+}
+
+func Test_CantRetrieveProcessedImageBeforeProcessing(t *testing.T) {
+	p, err := New(testImageFilename)
+	if err != nil {
+		t.Fatalf("Error create new image process: %v", err)
+	}
+
+	_, err = p.GetProcessedImage()
+	if err == nil {
+		t.Fatal("Able to retrieve processed image before it was processed")
+	}
+
+	_, err = p.GetProcessedImageFilename()
+	if err == nil {
+		t.Fatal("Able to retrieve processed image filename before it was processed")
 	}
 }
