@@ -1,14 +1,25 @@
-package imageprocessing
+package effects
 
 import (
 	"image"
 	"image/color"
 	"log"
+	"math"
 	"sync"
+
+	"github.com/jonasdebeukelaer/goGlitch/processing"
 )
 
-func lignify(img image.Image) (image.Image, error) {
+// Lignify processes the image with the effect lignify
+func Lignify(p processing.Process) error {
 	log.Print("Running lignify...")
+
+	img, err := p.GetSourceImage()
+	if err != nil {
+		log.Println("cancelled!")
+		return err
+	}
+
 	xMax := img.Bounds().Max.X
 	yMax := img.Bounds().Max.Y
 
@@ -25,7 +36,7 @@ func lignify(img image.Image) (image.Image, error) {
 
 			for x := 0; x < xMax; x++ {
 				r, g, b, a := img.At(x, y).RGBA()
-				r = r * 2
+				r = uint32(math.Ceil(float64(r) * 1.1))
 				processedImg.Set(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
 			}
 		}()
@@ -33,5 +44,5 @@ func lignify(img image.Image) (image.Image, error) {
 
 	log.Println("done")
 	wg.Wait()
-	return processedImg, nil
+	return p.SetProcessedImage(processedImg)
 }
