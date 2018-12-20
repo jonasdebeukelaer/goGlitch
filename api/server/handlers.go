@@ -115,7 +115,7 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error loading image for processing: %v", err)
 	}
-	err = p.SetEffect(processing.Options["lignify"])
+	err = p.SetEffect(processing.EffectLignify)
 	if err != nil {
 		log.Printf("Error setting effect: %v", err)
 	}
