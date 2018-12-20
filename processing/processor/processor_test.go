@@ -14,7 +14,7 @@ func init() {
 	}
 }
 
-var testImageFilename = "storage/uploads/test_upload.jpg"
+var testImageFilename = "storage/test_uploads/test_upload.jpg"
 
 func getImage(filename string) image.Image {
 	fr, _ := os.Open(testImageFilename)
