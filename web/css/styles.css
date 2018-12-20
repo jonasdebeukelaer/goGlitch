@@ -10,11 +10,26 @@ body {
 }
 
 img {
-    width: 50%;
+    width: 100%;
 }
 
-hidden {
+.workspace {
+  width: 100%;
+  float: left;
+}
+
+.image-container {
+  display: inline-block;
+  width: 49%;
+}
+
+.source-image-container {
+  float: left;
+}
+
+.hidden, .lds-hourglass.hidden {
     visibility: hidden;
+    display: none;
 }
 
 .lds-hourglass {

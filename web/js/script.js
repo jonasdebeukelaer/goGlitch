@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", function(event) {
     
     $("#process").click(function() {
-        $("#processing").removeClass("hidden");
+        $("#processing-spinner").removeClass("hidden");
         $("#processed-image").addClass("hidden");
 
         $.ajax({
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var imageURL = xhr["imageURL"];
                 console.log(imageURL);
                 document.getElementById("processed-image").src="http://localhost:8080/processed_images/" + imageURL;
-                $("#processing").addClass("hidden");
+                $("#processing-spinner").addClass("hidden");
                 $("#processed-image").removeClass("hidden");
                 console.log("processing complete");
             },

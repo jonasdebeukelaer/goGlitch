@@ -17,12 +17,14 @@
         <div>
             <h2>{{.Filename}}</h2>
             <input type="button" id="process" value="process image">
-            <div class="image-container source-image-container">
-                <img class="source-image" src="source_image/{{.Filename}}">
-            </div>
-            <div id="processed-image-container" class="image-container processed-image-container">
-                <div id="processing" class="hidden lds-hourglass"></div>
-                <img id="processed-image" class="processed-image" src="source_image/placeholder.png">
+            <div class="workspace">
+                <div class="image-container source-image-container">
+                    <img class="source-image" src="source_image/{{.Filename}}">
+                </div>
+                <div id="processed-image-container" class="image-container processed-image-container">
+                    <div id="processing-spinner" class="hidden lds-hourglass"></div>
+                    <img id="processed-image" class="processed-image" src="source_image/placeholder.png">
+                </div>
             </div>
         </div>
 
