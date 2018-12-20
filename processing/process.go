@@ -1,9 +1,8 @@
 package processing
 
-import "image"
-
-const (
-	lingify = "processing_lignify"
+import (
+	"image"
+	_ "image/jpeg" //to make sure jpeg images can be decoded
 )
 
 // Process represents the steps required to apply an effect or

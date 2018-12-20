@@ -1,9 +1,8 @@
-package prepare
+package processor
 
 import (
 	"errors"
 	"image"
-	_ "image/jpeg" //to make sure jpeg images can be decoded
 	"image/png"
 	"log"
 	"os"
@@ -26,7 +25,7 @@ type processor struct {
 	processedImg         image.Image
 }
 
-// New creates an instance of an image processing event
+// New creates an instance of an image manupulation process Process
 func New(filename string) (processing.Process, error) {
 	filenameParts := strings.Split(filename, ".")
 	imgName := strings.Join(filenameParts[:len(filenameParts)-1], ".")
