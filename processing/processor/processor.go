@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/jonasdebeukelaer/goGlitch/processing"
@@ -25,9 +26,10 @@ type processor struct {
 	processedImg         image.Image
 }
 
-// New creates an instance of an image manupulation process Process
+// New creates an instance of an image manupulation process
 func New(filename string) (processing.Process, error) {
-	filenameParts := strings.Split(filename, ".")
+	_, realFilename := filepath.Split(filename)
+	filenameParts := strings.Split(realFilename, ".")
 	imgName := strings.Join(filenameParts[:len(filenameParts)-1], ".")
 
 	p := &processor{
@@ -41,7 +43,7 @@ func New(filename string) (processing.Process, error) {
 }
 
 func (p *processor) setSourceImage(filename string) error {
-	fileReader, err := os.Open("uploads/" + filename)
+	fileReader, err := os.Open(filename)
 	if err != nil {
 		return errors.New("Error loading image for processing: " + err.Error())
 	}
@@ -58,11 +60,11 @@ func (p *processor) setSourceImage(filename string) error {
 }
 
 func (p *processor) SetEffect(effect string) error {
-	e, ok := processing.Options[effect]
-	if !ok {
-		return errors.New("effect '" + effect + "' not valid")
-	}
-	p.effect = e
+	// e, ok := processing.EffectLignify
+	// if !ok {
+	// 	return errors.New("effect '" + effect + "' not valid")
+	// }
+	p.effect = effect
 	return nil
 }
 
