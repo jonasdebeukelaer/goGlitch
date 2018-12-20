@@ -111,7 +111,7 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 
 	filename := r.URL.Query()["image"][0]
 
-	p, err := processor.New(filename)
+	p, err := processor.New("uploads/" + filename)
 	if err != nil {
 		log.Printf("Error loading image for processing: %v", err)
 	}

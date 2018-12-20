@@ -1,7 +1,5 @@
 package processing
 
-var (
-	Options = map[string]string{
-		"lignify": "lignify",
-	}
+const (
+	EffectLignify = "lignify" // use lignify effect
 )
