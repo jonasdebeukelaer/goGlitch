@@ -20,8 +20,8 @@ func Serve(port string) {
 	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("web/css/"))))
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("web/js/"))))
 	mux.Handle("/fonts/", http.StripPrefix("/fonts/", http.FileServer(http.Dir("web/resources/fonts/"))))
-	mux.Handle("/source_image/", http.StripPrefix("/source_image/", http.FileServer(http.Dir("uploads/"))))
-	mux.Handle("/processed_images/", http.StripPrefix("/processed_images/", http.FileServer(http.Dir("processed_images/"))))
+	mux.Handle("/source_image/", http.StripPrefix("/source_image/", http.FileServer(http.Dir("storage/uploads/"))))
+	mux.Handle("/processed_images/", http.StripPrefix("/processed_images/", http.FileServer(http.Dir("storage/processed_images/"))))
 
 	handler := cors.Default().Handler(mux)
 

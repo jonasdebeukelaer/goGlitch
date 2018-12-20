@@ -79,7 +79,7 @@ func saveImage(w http.ResponseWriter, image multipart.File, handle *multipart.Fi
 		return
 	}
 
-	err = ioutil.WriteFile("./uploads/"+handle.Filename, data, 0666)
+	err = ioutil.WriteFile("./storage/uploads/"+handle.Filename, data, 0666)
 	if err != nil {
 		fmt.Fprintf(w, "%v", err)
 		return
@@ -111,7 +111,7 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 
 	filename := r.URL.Query()["image"][0]
 
-	p, err := processor.New("uploads/" + filename)
+	p, err := processor.New("storage/uploads/" + filename)
 	if err != nil {
 		log.Printf("Error loading image for processing: %v", err)
 	}

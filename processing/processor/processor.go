@@ -114,7 +114,7 @@ func (p *processor) saveImage() error {
 	log.Printf("Saving processed image %s", p.sourceImgFilename)
 	p.processedImgFilename = p.sourceImgName + "_processed.png"
 
-	f, err := os.Create("processed_images/" + p.processedImgFilename)
+	f, err := os.Create("storage/processed_images/" + p.processedImgFilename)
 	if err != nil {
 		return err
 	}
