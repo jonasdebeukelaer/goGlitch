@@ -116,10 +116,28 @@ func (p processor) GetProcessedImageFilename() (string, error) {
 func (p *processor) saveImage() error {
 	log.Printf("Saving processed image %s", p.sourceImgFilename)
 	p.processedImgFilename = p.sourceImgName + "_processed.png"
+	targetDirectory := "storage/processed_images/"
+	targetFilepath := targetDirectory + p.processedImgFilename
 
-	f, err := os.Create("storage/processed_images/" + p.processedImgFilename)
+	err := createDirectoryIfNotExists(targetDirectory)
+	if err != nil {
+		return errors.New("Error creating target directory '" + targetDirectory + "'")
+	}
+
+	f, err := os.Create(targetFilepath)
 	if err != nil {
 		return err
 	}
 	return png.Encode(f, p.processedImg)
+}
+
+func createDirectoryIfNotExists(targetDirectory string) error {
+	_, err := os.Stat(targetDirectory)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return os.MkdirAll(targetDirectory, 0755)
+		}
+		return err
+	}
+	return nil
 }
