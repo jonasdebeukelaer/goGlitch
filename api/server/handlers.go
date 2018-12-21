@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/jonasdebeukelaer/goGlitch/processing"
-	"github.com/jonasdebeukelaer/goGlitch/processing/processor"
 )
 
 type mainPageVariables struct {
@@ -111,7 +110,7 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 
 	filename := r.URL.Query()["image"][0]
 
-	p, err := processor.New("storage/uploads/" + filename)
+	p, err := processing.New("storage/uploads/" + filename)
 	if err != nil {
 		log.Printf("Error loading image for processing: %v", err)
 	}

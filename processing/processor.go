@@ -1,25 +1,24 @@
-package processor
+package processing
 
 import (
 	"errors"
+	"fmt"
 	"image"
+	_ "image/jpeg" // required for decoding
 	"image/png"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/jonasdebeukelaer/goGlitch/processing"
-	"github.com/jonasdebeukelaer/goGlitch/processing/effects"
 )
 
-type processor struct {
+type Processor struct {
 	sourceImgFilename string
 	sourceImgName     string
 	sourceImgFiletype string
 	sourceImg         image.Image
 
-	effect             string
+	effect             Effect
 	processingComplete bool
 
 	processedImgFilename string
@@ -27,25 +26,26 @@ type processor struct {
 }
 
 // New creates an instance of an image manupulation process
-func New(filename string) (processing.Process, error) {
+func New(filename string) (*Processor, error) {
 	_, realFilename := filepath.Split(filename)
 	filenameParts := strings.Split(realFilename, ".")
 	imgName := strings.Join(filenameParts[:len(filenameParts)-1], ".")
 
-	p := &processor{
+	p := &Processor{
 		sourceImgFilename: filename,
 		sourceImgName:     imgName,
 	}
 
 	err := p.setSourceImage(filename)
 	if err != nil {
-		return nil, err
+		return &Processor{}, err
 	}
 
 	return p, nil
 }
 
-func (p *processor) setSourceImage(filename string) error {
+func (p *Processor) setSourceImage(filename string) error {
+	fmt.Println(filename)
 	fileReader, err := os.Open(filename)
 	if err != nil {
 		return errors.New("Error loading image for processing: " + err.Error())
@@ -62,16 +62,12 @@ func (p *processor) setSourceImage(filename string) error {
 	return nil
 }
 
-func (p *processor) SetEffect(effect string) error {
-	// e, ok := processing.EffectLignify
-	// if !ok {
-	// 	return errors.New("effect '" + effect + "' not valid")
-	// }
+func (p *Processor) SetEffect(effect Effect) error {
 	p.effect = effect
 	return nil
 }
 
-func (p *processor) ProcessImage() error {
+func (p *Processor) ProcessImage() error {
 	if p.processingComplete {
 		return errors.New("Processing already complete")
 	}
@@ -79,41 +75,43 @@ func (p *processor) ProcessImage() error {
 		return errors.New("Source image not set")
 	}
 
-	err := effects.Lignify(p) // TODO change this once more effects are added!
+	processedImg, err := p.effect(p.sourceImg)
 	if err != nil {
 		return err
 	}
+	p.SetProcessedImage(processedImg)
+
 	p.processingComplete = true
 	return nil
 }
 
-func (p processor) GetSourceImage() (image.Image, error) {
+func (p Processor) GetSourceImage() (image.Image, error) {
 	if p.sourceImg == nil {
 		return nil, errors.New("Source image not yet set")
 	}
 	return p.sourceImg, nil
 }
 
-func (p *processor) SetProcessedImage(img image.Image) error {
+func (p *Processor) SetProcessedImage(img image.Image) error {
 	p.processedImg = img
 	return p.saveImage()
 }
 
-func (p processor) GetProcessedImage() (image.Image, error) {
+func (p Processor) GetProcessedImage() (image.Image, error) {
 	if !p.processingComplete {
 		return nil, errors.New("Processing has not yet occured")
 	}
 	return p.processedImg, nil
 }
 
-func (p processor) GetProcessedImageFilename() (string, error) {
+func (p Processor) GetProcessedImageFilename() (string, error) {
 	if !p.processingComplete {
 		return "", errors.New("Processing has not yet occured")
 	}
 	return p.processedImgFilename, nil
 }
 
-func (p *processor) saveImage() error {
+func (p *Processor) saveImage() error {
 	log.Printf("Saving processed image %s", p.sourceImgFilename)
 	p.processedImgFilename = p.sourceImgName + "_processed.png"
 	targetDirectory := "storage/processed_images/"

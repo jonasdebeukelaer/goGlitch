@@ -1,15 +1,13 @@
-package processor
+package processing
 
 import (
 	"image"
 	"os"
 	"testing"
-
-	"github.com/jonasdebeukelaer/goGlitch/processing"
 )
 
 func init() {
-	if err := os.Chdir("../.."); err != nil {
+	if err := os.Chdir("../"); err != nil {
 		panic(err)
 	}
 }
@@ -24,7 +22,7 @@ func getImage(filename string) image.Image {
 func Test_initImageProcess(t *testing.T) {
 	_, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 }
 
@@ -39,7 +37,7 @@ func Test_ErrorOnNewIfImageNotExist(t *testing.T) {
 func Test_GetSourceImg(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 
 	sourceImg, err := p.GetSourceImage()
@@ -56,10 +54,10 @@ func Test_GetSourceImg(t *testing.T) {
 func Test_SetEffect(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(processing.EffectLignify)
+	err = p.SetEffect(EffectLignify)
 	if err != nil {
 		t.Fatalf("Could not set the effect: %v", err)
 	}
@@ -68,10 +66,10 @@ func Test_SetEffect(t *testing.T) {
 func Test_ProcessAndRetrieveImage(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(processing.EffectLignify)
+	err = p.SetEffect(EffectLignify)
 	if err != nil {
 		t.Fatalf("Could not set the effect: %v", err)
 	}
@@ -95,10 +93,10 @@ func Test_ProcessAndRetrieveImage(t *testing.T) {
 func Test_CantProcessimageTwice(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(processing.EffectLignify)
+	err = p.SetEffect(EffectLignify)
 	if err != nil {
 		t.Fatalf("Could not set the effect: %v", err)
 	}
@@ -110,7 +108,7 @@ func Test_CantProcessimageTwice(t *testing.T) {
 
 	err = p.ProcessImage()
 	if err == nil {
-		t.Fatalf("Able to run processing twice")
+		t.Fatalf("Able to run twice")
 	}
 
 }
@@ -118,7 +116,7 @@ func Test_CantProcessimageTwice(t *testing.T) {
 func Test_CantRetrieveProcessedImageBeforeProcessing(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
-		t.Fatalf("Error create new image process: %v", err)
+		t.Fatalf("Error create new image processor: %v", err)
 	}
 
 	_, err = p.GetProcessedImage()

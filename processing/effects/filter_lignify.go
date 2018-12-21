@@ -6,19 +6,11 @@ import (
 	"log"
 	"math"
 	"sync"
-
-	"github.com/jonasdebeukelaer/goGlitch/processing"
 )
 
 // Lignify processes the image with the effect lignify
-func Lignify(p processing.Process) error {
+func Lignify(img image.Image) (image.Image, error) {
 	log.Print("Running lignify...")
-
-	img, err := p.GetSourceImage()
-	if err != nil {
-		log.Println("cancelled!")
-		return err
-	}
 
 	xMax := img.Bounds().Max.X
 	yMax := img.Bounds().Max.Y
@@ -44,5 +36,5 @@ func Lignify(p processing.Process) error {
 
 	log.Println("done")
 	wg.Wait()
-	return p.SetProcessedImage(processedImg)
+	return processedImg, nil
 }

@@ -1,5 +1,14 @@
 package processing
 
-const (
-	EffectLignify = "lignify" // use lignify effect
+import (
+	"image"
+
+	"github.com/jonasdebeukelaer/goGlitch/processing/effects"
+)
+
+// Effect represents a possible effect to apply to an image
+type Effect func(image.Image) (image.Image, error)
+
+var (
+	EffectLignify Effect = effects.Lignify // use lignify effect
 )
