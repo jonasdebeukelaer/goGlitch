@@ -2,7 +2,6 @@ package processing
 
 import (
 	"errors"
-	"fmt"
 	"image"
 	_ "image/jpeg" // required for decoding
 	"image/png"
@@ -45,7 +44,6 @@ func New(filename string) (*Processor, error) {
 }
 
 func (p *Processor) setSourceImage(filename string) error {
-	fmt.Println(filename)
 	fileReader, err := os.Open(filename)
 	if err != nil {
 		return errors.New("Error loading image for processing: " + err.Error())
@@ -75,10 +73,16 @@ func (p *Processor) ProcessImage() error {
 		return errors.New("Source image not set")
 	}
 
-	processedImg, err := p.effect(p.sourceImg)
+	scaledSourceImg, err := scaleImage(p.sourceImg, 1000)
 	if err != nil {
 		return err
 	}
+
+	processedImg, err := p.effect(scaledSourceImg)
+	if err != nil {
+		return err
+	}
+
 	p.SetProcessedImage(processedImg)
 
 	p.processingComplete = true
@@ -112,8 +116,9 @@ func (p Processor) GetProcessedImageFilename() (string, error) {
 }
 
 func (p *Processor) saveImage() error {
-	log.Printf("Saving processed image %s", p.sourceImgFilename)
 	p.processedImgFilename = p.sourceImgName + "_processed.png"
+	log.Printf("Saving processed image %s", p.processedImgFilename)
+
 	targetDirectory := "storage/processed_images/"
 	targetFilepath := targetDirectory + p.processedImgFilename
 

@@ -10,5 +10,6 @@ import (
 type Effect func(image.Image) (image.Image, error)
 
 var (
-	EffectLignify Effect = effects.Lignify // use lignify effect
+	EffectLignify      Effect = effects.Lignify      // use lignify effect
+	EffectRandomMuddle Effect = effects.RandomMuddle // use random muddle effect
 )
