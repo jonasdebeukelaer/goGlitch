@@ -1,21 +1,41 @@
-<!DOCTYPE html>
 <html>
     <head>
         <title>goGlitch</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
-
     </head>
     <body>
-        <h1>goGlitch v0.0.1</h1>
-        <p>
-            welcome to goGlitch, where hopefully, in time, you will be able to use some tools I've created
-            for glitching some images
-        </p>
-        
-        <form action="/upload_image" enctype="multipart/form-data" method="POST">
-            <input type="file" name="picture" accept="image/*">
-            <input type="submit">
-        </form>
+        <div id="app">
+            <h1>goGlitch v0.0.1</h1>
+            <p>
+                welcome to goGlitch, where hopefully, in time, you will be able to use some tools I've created
+                for glitching some images
+            </p>
+
+            {{ message }}
+
+            <label>Image
+                <input type="file" ref="image_file" name="picture" accept="image/*" v-on:change="handleImageUpload()">
+            </label>
+            <button v-on:click="submitImage()">Submit</button>
+
+            <div id="workspace" :class="workspaceVisibleClass">
+                <h2>{{ filename }}</h2>
+                <input type="button" value="process image" v-on:click="processImage()">
+                <div class="workspace">
+                    <div class="image-container source-image-container">
+                        <img class="source-image" :src="sourceImgUrl">
+                    </div>
+                    <div id="processed-image-container" class="image-container processed-image-container">
+                        <div id="processing-spinner" :class="spinnerVisibleClass" class="lds-hourglass"></div>
+                        <img id="processed-image" class="processed-image" :src="processedImgUrl">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="node_modules/vue/dist/vue.js"></script>
+        <script src="node_modules/axios/dist/axios.js"></script>
+        <script src="js/script.js"></script>
     </body>
 </html>

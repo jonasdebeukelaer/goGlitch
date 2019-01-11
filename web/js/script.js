@@ -1,37 +1,60 @@
-"use strict";
+var app = new Vue({
+    el: '#app',
+    data: {
+        message: 'Hello Vue!',
+        workspaceVisibleClass: 'hidden',
+        spinnerVisibleClass: 'hidden',
+        filename: '',
+        sourceImgUrl: 'source_image/placeholder.png',
+        processedImgUrl: 'source_image/placeholder.png'
+    },
+    methods: {
+        handleImageUpload() {
+            this.image_file = this.$refs.image_file.files[0];
+        },
+        submitImage(){
+            //showSpinner()
+            uploadImage(this, function() {
+            })
+            //hideSpinner()
+        },
+        processImage() {
+            processAndLoadImage(this)
+        }
+    }
+})
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    
-    $("#process").click(function() {
-        $("#processing-spinner").removeClass("hidden");
-        $("#processed-image").addClass("hidden");
-
-        $.ajax({
-            url: "http://localhost:8080/process_image", 
-            type: "GET",
-            data: {"image": $.urlParam("image")},
-            accepts: "json",
-            success: function(xhr) {
-                var imageURL = xhr["imageURL"];
-                console.log(imageURL);
-                document.getElementById("processed-image").src="http://localhost:8080/processed_images/" + imageURL;
-                $("#processing-spinner").addClass("hidden");
-                $("#processed-image").removeClass("hidden");
-                console.log("processing complete");
-            },
-            error: function(xhr){
-                console.log(xhr)
-                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+var uploadImage = function(that, callback) {
+    let formData = new FormData();
+    formData.append("image", that.image_file)
+    axios.post( '/upload_image',
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-        });
+        }
+        ).then(function(res){
+            that.filename = res.data.filename
+            that.sourceImgUrl = "source_image/" + res.data.filename
+            that.processedImgUrl = "source_image/placeholder.png" 
+            that.workspaceVisibleClass = ''
+            console.log('image uploaded');
+        })
+        .catch(function(){
+            console.log('failed to upload image');
+    });
+}
 
-        
-    })
-
-
-});
-
-$.urlParam = function(name){
-	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	return results[1] || 0;
+var processAndLoadImage = function(that) {
+    that.spinnerVisibleClass = ''
+    url = '/process_image?image=' + that.filename
+    axios.get( url ).then(function(res){
+            that.processedImgUrl = "processed_image/" + res.data.filename
+            that.spinnerVisibleClass = 'hidden'
+            console.log('image processed');
+        })
+        .catch(function(){
+            console.log('failed to upload image');
+    });
 }

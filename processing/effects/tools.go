@@ -9,9 +9,15 @@ import (
 	"github.com/disintegration/gift"
 )
 
-var ErrMaxCannotBeZero = errors.New("Max cannot be zero")
-var ErrImageSizeIsZero = errors.New("Image cannot have size 0")
+var (
+	// ErrMaxCannotBeZero returned when max is zero
+	ErrMaxCannotBeZero = errors.New("Max cannot be zero")
+	// ErrImageSizeIsZero returned when image size is 0
+	ErrImageSizeIsZero = errors.New("Image cannot have size 0")
+)
 
+// Wrap wraps around the edger of an image and back around
+// the other side
 func Wrap(a, aMax int) (int, error) {
 	if aMax < 1 {
 		return 0, ErrMaxCannotBeZero
@@ -26,6 +32,7 @@ func Wrap(a, aMax int) (int, error) {
 	return a, nil
 }
 
+// Fill fills an input image with the specificed colour
 func Fill(img *image.RGBA, colour color.RGBA) (*image.RGBA, error) {
 	if img.Bounds() == image.Rect(0, 0, 0, 0) {
 		return nil, ErrImageSizeIsZero
@@ -52,6 +59,8 @@ func Fill(img *image.RGBA, colour color.RGBA) (*image.RGBA, error) {
 	return filledImg, nil
 }
 
+// Blur uses a Gaussian blur on the input image, given a sigma.
+// sigma defines how much to blur the image
 func Blur(src image.Image, sigma float32) (*image.RGBA, error) {
 	if src.Bounds() == image.Rect(0, 0, 0, 0) {
 		return nil, ErrImageSizeIsZero
