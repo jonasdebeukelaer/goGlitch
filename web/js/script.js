@@ -1,30 +1,48 @@
 var app = new Vue({
     el: '#app',
     data: {
-        message: 'Hello Vue!',
-        workspaceVisibleClass: 'hidden',
+        uploadingImage: false,
+        processingImage: false,
+        processBtnText: 'process image',
+        sidebarVisibleClass: 'hidden',
         spinnerVisibleClass: 'hidden',
         filename: '',
-        sourceImgUrl: 'source_image/placeholder.png',
-        processedImgUrl: 'source_image/placeholder.png'
+        sidebarImgUrl: 'source_image/placeholder.png',
+        mainImgUrl: 'source_image/placeholder.png'
     },
     methods: {
-        handleImageUpload() {
-            this.image_file = this.$refs.image_file.files[0];
+        showInfo() {
+            this.$alert('welcome to goGlitch, where hopefully, in time, you will be able to use some tools I\'ve created for glitching some images', 
+            'Welcome to goGlitch', {
+                confirmButtonText: 'OK'
+              });
+        },
+        selectFile() {
+            this.$refs.image_file.click()
         },
         submitImage(){
-            //showSpinner()
-            uploadImage(this, function() {
-            })
-            //hideSpinner()
+            var filelist = this.$refs.image_file.files
+            if (filelist.length !== 0) {
+                this.image_file = filelist[0];
+                uploadImage(this)
+            }
         },
         processImage() {
             processAndLoadImage(this)
-        }
+        },
+        reportError(errMsg) {
+            const h = this.$createElement;
+    
+            this.$notify({
+              title: 'Error',
+              message: h('i', { style: 'color: #202020' }, errMsg)
+            });
+          },
     }
 })
 
-var uploadImage = function(that, callback) {
+var uploadImage = function(that) {
+    that.uploadingImage = true
     let formData = new FormData();
     formData.append("image", that.image_file)
     axios.post( '/upload_image',
@@ -35,26 +53,36 @@ var uploadImage = function(that, callback) {
             }
         }
         ).then(function(res){
+            that.uploadingImage = false
             that.filename = res.data.filename
-            that.sourceImgUrl = "source_image/" + res.data.filename
-            that.processedImgUrl = "source_image/placeholder.png" 
-            that.workspaceVisibleClass = ''
-            console.log('image uploaded');
+            that.sidebarImgUrl = "source_image/" + res.data.filename
+            that.mainImgUrl = "source_image/placeholder.png" 
+            that.sidebarVisibleClass = ''
         })
-        .catch(function(){
-            console.log('failed to upload image');
+        .catch(function(res){
+            reportError('failed to upload image!');
+            console.log(res)
+        .then(function() {
+            that.uploadingImage = false
+        })
     });
 }
 
 var processAndLoadImage = function(that) {
+    that.processBtnText = ''
+    that.processingImage = true
     that.spinnerVisibleClass = ''
     url = '/process_image?image=' + that.filename
     axios.get( url ).then(function(res){
-            that.processedImgUrl = "processed_image/" + res.data.filename
-            that.spinnerVisibleClass = 'hidden'
-            console.log('image processed');
-        })
-        .catch(function(){
-            console.log('failed to upload image');
+        that.mainImgUrl = "processed_image/" + res.data.filename
+        that.spinnerVisibleClass = 'hidden'
+        console.log('image processed');
+    })
+    .catch(function(){
+        reportError('failed to process image!');
+    })
+    .then(function() {
+        that.processingImage = false
+        that.processBtnText = 'process image'
     });
 }

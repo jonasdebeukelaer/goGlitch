@@ -2,40 +2,52 @@
     <head>
         <title>goGlitch</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../../node_modules/element-ui/lib/theme-chalk/index.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
     </head>
     <body>
-        <div id="app">
-            <h1>goGlitch v0.0.1</h1>
-            <p>
-                welcome to goGlitch, where hopefully, in time, you will be able to use some tools I've created
-                for glitching some images
-            </p>
-
-            {{ message }}
-
-            <label>Image
-                <input type="file" ref="image_file" name="picture" accept="image/*" v-on:change="handleImageUpload()">
-            </label>
-            <button v-on:click="submitImage()">Submit</button>
-
-            <div id="workspace" :class="workspaceVisibleClass">
-                <h2>{{ filename }}</h2>
-                <input type="button" value="process image" v-on:click="processImage()">
-                <div class="workspace">
-                    <div class="image-container source-image-container">
-                        <img class="source-image" :src="sourceImgUrl">
+        <el-container id="app">
+            <el-header>
+                    <el-row :gutter="10">
+                            <el-col :xs="20" :sm="20" :md="22" :lg="22" :xl="22"><h1>goGlitch</h1></el-col>
+                            <el-col :xs="4" :sm="4" :md="2" :lg="2" :xl="2">
+                                    <el-container>
+                                        <el-main>
+                                            <el-button class="info-btn" icon="el-icon-info" circle @click="showInfo"></el-button>
+                                        </el-main>
+                                    </el-container>
+                            </el-col>
+                          </el-row>
+            </el-header>
+            <el-container>
+                <el-aside width="220px">
+                    <el-button type="Plain" @click="selectFile()" class="upload-btn" :loading="uploadingImage" :disabled="uploadingImage">
+                        <i class="el-icon-upload"></i>
+                        select image
+                    </el-button>
+                    <input type="file" ref="image_file" accept="image/*" @change="submitImage()" class="hidden">
+                    
+                    <div :class="sidebarVisibleClass">
+                        <h3>{{ filename }}</h3>
+                        <div class="image-container sidebar-image-container">
+                            <img class="sidebar-image" :src="sidebarImgUrl">
+                        </div>
+                        <el-button type="Plain" class="process-btn" @click="processImage()" :loading="processingImage" :disabled="processingImage">{{ processBtnText }}</el-button>
                     </div>
-                    <div id="processed-image-container" class="image-container processed-image-container">
-                        <div id="processing-spinner" :class="spinnerVisibleClass" class="lds-hourglass"></div>
-                        <img id="processed-image" class="processed-image" :src="processedImgUrl">
+                </el-aside>
+                <el-container>
+                <el-main>
+                    <div id="main-image-container" v-loading="processingImage" element-loading-background="rgba(255, 255, 255, 0.2)" class="image-container main-image-container">
+                        <img id="main-image" class="main-image" :src="mainImgUrl">
                     </div>
-                </div>
-            </div>
-        </div>
+                </el-main>
+                </el-container>
+            </el-container>
+        </el-container>
 
         <script src="node_modules/vue/dist/vue.js"></script>
         <script src="node_modules/axios/dist/axios.js"></script>
+        <script src="../../node_modules/element-ui/lib/index.js"></script>
         <script src="js/script.js"></script>
     </body>
 </html>
