@@ -7,10 +7,23 @@ body {
     background-color: #202020;
     color: #A9A9A9;
     font-family: 'njfont-light';
+    margin: 0;
+}
+
+h1 {
+  margin-top: 11px;
+  margin-bottom: 11px;
+}
+
+.el-button:focus, .el-button:hover {
+  color: #838383;
+  border-color: #838383;
+  background-color: #ecf5ff;
 }
 
 header.el-header {
   padding-right: 0px;
+  background-color: #3a3a3a;
 }
 
 header button.info-btn {
@@ -26,9 +39,27 @@ header button.info-btn:focus {
   background-color: #202020;
 }
 
+header .el-main {
+  padding: 5px;
+}
+
+img.sidebar-image,
+img.main-image {
+  display: block;
+  margin: auto;
+}
+
+aside {
+  background-color: #3a3a3a;
+  padding: 5px;
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+}
+
 aside .sidebar-image {
   max-height: 200px;
-  max-width: 220px;
+  max-width: 210px;
 }
 
 aside .upload-btn {
@@ -43,7 +74,33 @@ aside button {
   width: 100%;
 }
 
+main.el-main.workspace {
+  position: absolute;
+  top: 50px;
+  left: 220px;
+  right: 0;
+  bottom: 0;
+}
+
+img.main-image {
+  width: 100%;
+}
+
+h3.intro-text {
+  margin: auto;
+  width: 300px;
+  margin-top: 200px;
+}
+
 .hidden {
     visibility: hidden;
     display: none;
+}
+
+.gmd-2 {
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }

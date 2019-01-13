@@ -1,15 +1,15 @@
 <html>
     <head>
-        <title>goGlitch</title>
+        <title>goglitch</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="../../node_modules/element-ui/lib/theme-chalk/index.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
     </head>
     <body>
         <el-container id="app">
-            <el-header>
+            <el-header height="50" class="gmd-2">
                     <el-row :gutter="10">
-                            <el-col :xs="20" :sm="20" :md="22" :lg="22" :xl="22"><h1>goGlitch</h1></el-col>
+                            <el-col :xs="20" :sm="20" :md="22" :lg="22" :xl="22"><h1><i>GOGLITCH</i></h1></el-col>
                             <el-col :xs="4" :sm="4" :md="2" :lg="2" :xl="2">
                                     <el-container>
                                         <el-main>
@@ -20,7 +20,7 @@
                           </el-row>
             </el-header>
             <el-container>
-                <el-aside width="220px">
+                <el-aside width="220px" class="gmd-2">
                     <el-button type="Plain" @click="selectFile()" class="upload-btn" :loading="uploadingImage" :disabled="uploadingImage">
                         <i class="el-icon-upload"></i>
                         select image
@@ -36,9 +36,10 @@
                     </div>
                 </el-aside>
                 <el-container>
-                <el-main>
+                <el-main class="workspace">
                     <div id="main-image-container" v-loading="processingImage" element-loading-background="rgba(255, 255, 255, 0.2)" class="image-container main-image-container">
-                        <img id="main-image" class="main-image" :src="mainImgUrl">
+                        <h3 class="intro-text" :class="introTextClass">Upload an image to begiiiin</h3>
+                        <img id="main-image" class="main-image" :class="mainImageClass" :src="mainImgUrl">
                     </div>
                 </el-main>
                 </el-container>

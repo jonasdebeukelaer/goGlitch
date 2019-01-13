@@ -3,17 +3,20 @@ var app = new Vue({
     data: {
         uploadingImage: false,
         processingImage: false,
+        introTextClass: '',
+        mainImageClass: 'hidden',
         processBtnText: 'process image',
         sidebarVisibleClass: 'hidden',
         spinnerVisibleClass: 'hidden',
         filename: '',
         sidebarImgUrl: 'source_image/placeholder.png',
-        mainImgUrl: 'source_image/placeholder.png'
+        mainImgUrl: 'source_image/placeholder.png',
+        fileList: []
     },
     methods: {
         showInfo() {
-            this.$alert('welcome to goGlitch, where hopefully, in time, you will be able to use some tools I\'ve created for glitching some images', 
-            'Welcome to goGlitch', {
+            this.$alert('welcome to goGlitch, where you can use some tools I\'ve created for glitching images', 
+            'Welcome to goglitch', {
                 confirmButtonText: 'OK'
               });
         },
@@ -58,6 +61,7 @@ var uploadImage = function(that) {
             that.sidebarImgUrl = "source_image/" + res.data.filename
             that.mainImgUrl = "source_image/placeholder.png" 
             that.sidebarVisibleClass = ''
+            that.introTextClass = 'hidden'
         })
         .catch(function(res){
             reportError('failed to upload image!');
@@ -76,6 +80,7 @@ var processAndLoadImage = function(that) {
     axios.get( url ).then(function(res){
         that.mainImgUrl = "processed_image/" + res.data.filename
         that.spinnerVisibleClass = 'hidden'
+        that.mainImageClass = ''
         console.log('image processed');
     })
     .catch(function(){
