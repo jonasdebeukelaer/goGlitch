@@ -35,7 +35,7 @@
                         <el-button type="Plain" class="process-btn" @click="processImage()" :loading="processingImage" :disabled="processingImage">{{ processBtnText }}</el-button>
                     </div>
                 </el-aside>
-                <el-container>
+                <el-container class="workspace-container">
                 <el-main class="workspace">
                     <div id="main-image-container" v-loading="processingImage" element-loading-background="rgba(255, 255, 255, 0.2)" class="image-container main-image-container">
                         <h3 class="intro-text" :class="introTextClass">Upload an image to begiiiin</h3>

@@ -43,6 +43,10 @@ header .el-main {
   padding: 5px;
 }
 
+.el-header > .el-row {
+  margin: 0 !important;
+}
+
 img.sidebar-image,
 img.main-image {
   display: block;
@@ -74,10 +78,18 @@ aside button {
   width: 100%;
 }
 
-main.el-main.workspace {
+.el-container.workspace-container {
   position: absolute;
   top: 50px;
   left: 220px;
+  right: 0;
+  bottom: 0;
+}
+
+main.el-main.workspace {
+  position: absolute;
+  top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
 }
