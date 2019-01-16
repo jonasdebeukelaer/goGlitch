@@ -57,6 +57,5 @@ func Lignify(img image.Image) (image.Image, error) {
 		return nil, err
 	}
 
-	log.Println("done")
 	return processedImg, nil
 }

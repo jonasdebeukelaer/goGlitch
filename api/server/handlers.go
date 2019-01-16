@@ -1,8 +1,10 @@
 package server
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -10,13 +12,6 @@ import (
 
 	"github.com/jonasdebeukelaer/goGlitch/processing"
 )
-
-type mainPageVariables struct {
-}
-
-type workPageVariables struct {
-	Filename string
-}
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "web/templates/main.html")
@@ -76,36 +71,83 @@ func saveImage(w http.ResponseWriter, image multipart.File, handle *multipart.Fi
 }
 
 func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	filename := r.URL.Query()["image"][0]
+	w.Header().Set("Content-Type", "application/json")
 
+	processedImageFilename, err := prepareAndProcessImage(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{\"error\": \"" + err.Error() + "\"}"))
+	} else {
+		w.Write([]byte("{\"filename\": \"" + processedImageFilename + "\"}"))
+	}
+
+	fmt.Fprint(w)
+}
+
+func prepareAndProcessImage(r *http.Request) (string, error) {
+	filename := r.URL.Query()["image"][0]
+	effectLayerList, err := parseEffectLayerList(r.Body)
+	if err != nil {
+		log.Printf("error getting reading effect layers: \n\t%v", err.Error())
+	}
+
+	p, err := runProcessing(filename, effectLayerList)
+	if err != nil {
+		log.Printf("error during image processing: \n\t%v", err.Error())
+	}
+
+	return p.GetProcessedImageFilename()
+}
+
+func parseEffectLayerList(bodyIo io.ReadCloser) ([]*processing.EffectLayer, error) {
+	body, err := ioutil.ReadAll(bodyIo)
+	if err != nil {
+		return nil, errors.New("error reading body content")
+	}
+
+	var effectLayerList []*processing.EffectLayer
+	err = json.Unmarshal(body, &effectLayerList)
+	if err != nil {
+		return nil, errors.New("error parsing body content")
+	}
+
+	return effectLayerList, nil
+}
+
+func runProcessing(filename string, layers []*processing.EffectLayer) (*processing.Processor, error) {
+	log.Println("Processing...")
 	p, err := processing.New("storage/uploads/" + filename)
 	if err != nil {
-		log.Printf("Error loading image for processing: %v", err)
+		return nil, fmt.Errorf("error loading image for processing: %v", err)
 	}
-	err = p.SetEffect(processing.EffectLignify)
+
+	err = p.ProcessImage(layers)
 	if err != nil {
-		log.Printf("Error setting effect: %v", err)
+		return nil, fmt.Errorf("error processing image: %v", err)
 	}
-
-	log.Println("Processing...")
-	err = p.ProcessImage()
-	if err != nil {
-		log.Printf("Error processing image: %v", err)
-	}
-
-	processedImageFilename, err := p.GetProcessedImageFilename()
-	if err != nil {
-		log.Printf("Error retrieving processed image filename: %v", err)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"filename\": \"" + processedImageFilename + "\"}"))
-
 	log.Println("done!")
-	fmt.Fprint(w)
+
+	return p, nil
+}
+
+func effectOptionHandler(w http.ResponseWriter, r *http.Request) {
+
+	listBytes, err := json.Marshal(processing.EffectList)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("failed to parse effects list")
+		fmt.Fprintf(w, "failed to parse effects list")
+	}
+
+	_, err = w.Write(listBytes)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("failed to write effects list")
+		fmt.Fprintf(w, "failed to write effects list")
+	}
 }

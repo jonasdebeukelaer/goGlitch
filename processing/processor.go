@@ -17,11 +17,13 @@ type Processor struct {
 	sourceImgFiletype string
 	sourceImg         image.Image
 
-	effect             Effect
-	processingComplete bool
-
+	processingComplete   bool
 	processedImgFilename string
 	processedImg         image.Image
+}
+
+type EffectLayer struct {
+	Key string
 }
 
 // New creates an instance of an image manupulation process
@@ -60,12 +62,7 @@ func (p *Processor) setSourceImage(filename string) error {
 	return nil
 }
 
-func (p *Processor) SetEffect(effect Effect) error {
-	p.effect = effect
-	return nil
-}
-
-func (p *Processor) ProcessImage() error {
+func (p *Processor) ProcessImage(layers []*EffectLayer) error {
 	if p.processingComplete {
 		return errors.New("Processing already complete")
 	}
@@ -73,17 +70,21 @@ func (p *Processor) ProcessImage() error {
 		return errors.New("Source image not set")
 	}
 
-	scaledSourceImg, err := scaleImage(p.sourceImg, 1000)
+	scaledImage, err := scaleImage(p.sourceImg, 1000)
 	if err != nil {
 		return err
 	}
 
-	processedImg, err := p.effect(scaledSourceImg)
-	if err != nil {
-		return err
+	filenameSuffix := ""
+	workingImg := scaledImage
+	for _, layer := range layers {
+		filenameSuffix += "_" + layer.Key
+		workingImg, err = EffectMap[layer.Key](workingImg)
+		if err != nil {
+			return err
+		}
 	}
-
-	p.SetProcessedImage(processedImg)
+	p.SetProcessedImage(workingImg, filenameSuffix)
 
 	p.processingComplete = true
 	return nil
@@ -96,9 +97,9 @@ func (p Processor) GetSourceImage() (image.Image, error) {
 	return p.sourceImg, nil
 }
 
-func (p *Processor) SetProcessedImage(img image.Image) error {
+func (p *Processor) SetProcessedImage(img image.Image, filenameSuffix string) error {
 	p.processedImg = img
-	return p.saveImage()
+	return p.saveImage(filenameSuffix)
 }
 
 func (p Processor) GetProcessedImage() (image.Image, error) {
@@ -115,8 +116,8 @@ func (p Processor) GetProcessedImageFilename() (string, error) {
 	return p.processedImgFilename, nil
 }
 
-func (p *Processor) saveImage() error {
-	p.processedImgFilename = p.sourceImgName + "_processed.png"
+func (p *Processor) saveImage(filenameSuffix string) error {
+	p.processedImgFilename = p.sourceImgName + "_" + filenameSuffix + ".png"
 	log.Printf("Saving processed image %s", p.processedImgFilename)
 
 	targetDirectory := "storage/processed_images/"

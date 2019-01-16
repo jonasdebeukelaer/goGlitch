@@ -51,30 +51,14 @@ func Test_GetSourceImg(t *testing.T) {
 	}
 }
 
-func Test_SetEffect(t *testing.T) {
-	p, err := New(testImageFilename)
-	if err != nil {
-		t.Fatalf("Error create new image processor: %v", err)
-	}
-
-	err = p.SetEffect(EffectLignify)
-	if err != nil {
-		t.Fatalf("Could not set the effect: %v", err)
-	}
-}
-
 func Test_ProcessAndRetrieveImage(t *testing.T) {
 	p, err := New(testImageFilename)
 	if err != nil {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(EffectLignify)
-	if err != nil {
-		t.Fatalf("Could not set the effect: %v", err)
-	}
-
-	err = p.ProcessImage()
+	el := []*EffectLayer{{Key: "colourise"}}
+	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image: %v", err)
 	}
@@ -96,17 +80,13 @@ func Test_CantProcessimageTwice(t *testing.T) {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(EffectLignify)
-	if err != nil {
-		t.Fatalf("Could not set the effect: %v", err)
-	}
-
-	err = p.ProcessImage()
+	el := []*EffectLayer{{Key: "colourise"}}
+	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image: %v", err)
 	}
 
-	err = p.ProcessImage()
+	err = p.ProcessImage(el)
 	if err == nil {
 		t.Fatalf("Able to run twice")
 	}

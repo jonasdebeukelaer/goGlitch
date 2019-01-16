@@ -20,7 +20,7 @@
                           </el-row>
             </el-header>
             <el-container>
-                <el-aside width="220px" class="gmd-2">
+                <el-aside width="260px" class="gmd-2">
                     <el-button type="Plain" @click="selectFile()" class="upload-btn" :loading="uploadingImage" :disabled="uploadingImage">
                         <i class="el-icon-upload"></i>
                         select image
@@ -32,7 +32,25 @@
                         <div class="image-container sidebar-image-container">
                             <img class="sidebar-image" :src="sidebarImgUrl">
                         </div>
-                        <el-button type="Plain" class="process-btn" @click="processImage()" :loading="processingImage" :disabled="processingImage">{{ processBtnText }}</el-button>
+
+                        <div class="effect-control-panel">
+                            <div ref="effectLayers" >
+                                <effect-card v-for="effect in effectLayers" v-bind:id="effect.id" v-bind:name="effect.name" v-bind:key="effect.key"></effect-card>
+                            </div>
+
+                            <el-dropdown trigger="click" @command="newEffectLayer">
+                                <el-button type="Plain">
+                                    add effect
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="opt in effectOptions" v-bind:key="opt.id"  :command="opt.id">{{ opt.name }}</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+
+                            <el-button type="Plain" class="process-btn" @click="processImage()" :loading="processingImage" :disabled="processingImage">{{ processBtnText }}</el-button>
+                        </div>
+
                     </div>
                 </el-aside>
                 <el-container class="workspace-container">

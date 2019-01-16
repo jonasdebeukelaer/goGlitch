@@ -70,18 +70,36 @@ aside .upload-btn {
   margin-top: 20px;
 }
 
-aside .process-btn {
+aside .process-btn,
+aside div.el-dropdown,
+aside div.el-card {
   margin-top: 10px;
 }
 
-aside button {
+aside button:not(.del-effect-btn),
+aside div.el-dropdown {
   width: 100%;
+}
+
+aside button.del-effect-btn {
+  float: right; 
+  padding: 3px 0;
+}
+
+aside .el-card__header,
+aside .el-card__body {
+  padding: 8px;
+}
+
+aside .effect-card .header {
+  text-transform: uppercase;
+  font-weight: 900;
 }
 
 .el-container.workspace-container {
   position: absolute;
   top: 50px;
-  left: 220px;
+  left: 260px;
   right: 0;
   bottom: 0;
 }

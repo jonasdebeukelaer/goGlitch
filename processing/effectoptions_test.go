@@ -11,12 +11,8 @@ func Test_EffectLignify(t *testing.T) {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(EffectLignify)
-	if err != nil {
-		t.Fatalf("Could not set the effect '%s': %v", effect, err)
-	}
-
-	err = p.ProcessImage()
+	el := []*EffectLayer{{Key: "colourise"}}
+	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image using effect '%s': %v", effect, err)
 	}
@@ -29,12 +25,8 @@ func Test_EffectRandomMuddle(t *testing.T) {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	err = p.SetEffect(EffectRandomMuddle)
-	if err != nil {
-		t.Fatalf("Could not set the effect '%s': %v", effect, err)
-	}
-
-	err = p.ProcessImage()
+	el := []*EffectLayer{{Key: "colourise"}}
+	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image using effect '%s': %v", effect, err)
 	}

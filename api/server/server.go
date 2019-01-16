@@ -15,6 +15,7 @@ func Serve(port string) {
 	mux.HandleFunc("/", defaultHandler)
 	mux.HandleFunc("/upload_image", imageUploadHandler)
 	mux.HandleFunc("/process_image", imageProcessHandler)
+	mux.HandleFunc("/effect_options", effectOptionHandler)
 
 	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("web/css/"))))
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("web/js/"))))
