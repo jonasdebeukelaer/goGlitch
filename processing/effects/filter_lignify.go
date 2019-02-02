@@ -8,7 +8,7 @@ import (
 )
 
 // Lignify processes the image with the effect lignify
-func Lignify(img image.Image) (image.Image, error) {
+func Lignify(img image.Image, param map[string]string) (image.Image, error) {
 	log.Print("Running lignify...")
 
 	xMax := img.Bounds().Max.X
@@ -40,11 +40,7 @@ func Lignify(img image.Image) (image.Image, error) {
 					avgBrightness := (r + g + b + a) / 1.0
 					vOffset := float64(avgBrightness)*scaler - float64(pxSeparation/2)
 
-					newY, err := Wrap(sy+int(vOffset), yMax)
-					if err != nil {
-						log.Fatal("error wrapping y")
-						newY = y
-					}
+					newY := Wrap(sy+int(vOffset), yMax)
 					processedImg.Set(x, newY, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
 				}
 			}()

@@ -57,7 +57,7 @@ func Test_ProcessAndRetrieveImage(t *testing.T) {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	el := []*EffectLayer{{Key: "colourise"}}
+	el := []*EffectLayer{{Key: "co", Params: nil}}
 	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image: %v", err)
@@ -80,7 +80,7 @@ func Test_CantProcessimageTwice(t *testing.T) {
 		t.Fatalf("Error create new image processor: %v", err)
 	}
 
-	el := []*EffectLayer{{Key: "colourise"}}
+	el := []*EffectLayer{{Key: "co", Params: nil}}
 	err = p.ProcessImage(el)
 	if err != nil {
 		t.Fatalf("Could not process image: %v", err)

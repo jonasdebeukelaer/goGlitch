@@ -9,7 +9,7 @@ import (
 )
 
 // Lignify processes the image with the effect lignify
-func RandomMuddle(img image.Image) (image.Image, error) {
+func RandomMuddle(img image.Image, params map[string]string) (image.Image, error) {
 	log.Print("Running random muddle...")
 
 	g := gift.New(

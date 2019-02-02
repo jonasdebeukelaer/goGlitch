@@ -18,10 +18,7 @@ var (
 
 // Wrap wraps around the edger of an image and back around
 // the other side
-func Wrap(a, aMax int) (int, error) {
-	if aMax < 1 {
-		return 0, ErrMaxCannotBeZero
-	}
+func Wrap(a, aMax int) int {
 	for a < 0 || a > aMax {
 		if a < 0 {
 			a = aMax + a
@@ -29,7 +26,7 @@ func Wrap(a, aMax int) (int, error) {
 			a = a - aMax
 		}
 	}
-	return a, nil
+	return a
 }
 
 // Fill fills an input image with the specificed colour

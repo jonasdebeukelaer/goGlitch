@@ -7,10 +7,10 @@ import (
 )
 
 // Effect represents a possible effect to apply to an image
-type Effect func(image.Image) (image.Image, error)
+type Effect func(image.Image, map[string]string) (image.Image, error)
 
 type effectOption struct {
-	ID     string `json:"id"`
+	Key    string `json:"effect_key"`
 	Name   string `json:"name"`
 	effect Effect
 }
@@ -20,14 +20,19 @@ var (
 	// it also populates the frontend list
 	EffectList = []effectOption{
 		effectOption{
-			ID:     "lignify",
+			Key:    "li",
 			Name:   "Lignify",
 			effect: effects.Lignify,
 		},
 		effectOption{
-			ID:     "colourise",
+			Key:    "co",
 			Name:   "Colourise",
 			effect: effects.RandomMuddle,
+		},
+		effectOption{
+			Key:    "sp",
+			Name:   "Split colours",
+			effect: effects.SplitColours,
 		},
 	}
 
@@ -37,9 +42,9 @@ var (
 		var eMap map[string]Effect
 		for i := range EffectList {
 			if len(eMap) == 0 {
-				eMap = map[string]Effect{EffectList[i].ID: EffectList[i].effect}
+				eMap = map[string]Effect{EffectList[i].Key: EffectList[i].effect}
 			} else {
-				eMap[EffectList[i].ID] = EffectList[i].effect
+				eMap[EffectList[i].Key] = EffectList[i].effect
 			}
 		}
 		return eMap

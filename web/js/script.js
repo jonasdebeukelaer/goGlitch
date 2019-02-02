@@ -1,10 +1,20 @@
+window.Event = new Vue();
+
 Vue.component('effect-card', {
-    props: ['name', 'id'],
+    data: {
+        params: {}
+    },
+    props: ['name', 'effect_key', 'id'],
+    methods: {
+        removeEffect(){
+            Event.$emit('removeEffect', this.id)
+       }
+    },
     template: `
     <el-card class="effect-card">
         <div slot="header" class="clearfix header">
             <span>{{ name }}</span>
-            <el-button class="del-effect-btn">
+            <el-button circle :id="'effect'+id" class="del-effect-btn" @click="removeEffect()">
                 <i class="el-icon-close"></i>
             </el-button>
         </div>
@@ -20,11 +30,9 @@ var app = new Vue({
     data: {
         uploadingImage: false,
         processingImage: false,
-        introTextClass: '',
-        mainImageClass: 'hidden',
+        imageUploaded: false,
+        imageProcessed: false,
         processBtnText: 'process image',
-        sidebarVisibleClass: 'hidden',
-        spinnerVisibleClass: 'hidden',
         filename: '',
         sidebarImgUrl: 'source_image/placeholder.png',
         mainImgUrl: 'source_image/placeholder.png',
@@ -39,7 +47,7 @@ var app = new Vue({
               });
         },
         selectFile() {
-            this.$refs.image_file.click()
+            this.$refs.image_file.click();
         },
         submitImage(){
             var filelist = this.$refs.image_file.files
@@ -53,15 +61,20 @@ var app = new Vue({
         },
         newEffectLayer(selectedEffect) {
             addNewEffectLayer(this, selectedEffect)
-        }
-    }
+        },
+        removeEffect(effectId) {this.effectLayers.pop(effectId);}
+    },
+    created(){
+        Event.$on('removeEffect', this.removeEffect)
+  }
 })
 
 var addNewEffectLayer = function(that, selectedEffect) {
     that.effectLayers.push({
-        name: selectedEffect,
-        key: selectedEffect,
-        id: selectedEffect + that.effectLayers.length
+        name: selectedEffect.name,
+        effect_key: selectedEffect.effect_key,
+        id: that.effectLayers.length,
+        params: selectedEffect.params
     })
 }
 
@@ -79,11 +92,13 @@ var uploadImage = function(that) {
         that.filename = res.data.filename;
         that.sidebarImgUrl = "source_image/" + res.data.filename;
         that.mainImgUrl = "source_image/placeholder.png" ;
-        that.sidebarVisibleClass = '';
+        that.imageUploaded = true;
         that.introTextClass = 'hidden';
         
+        while (that.effectOptions.length > 0) {
+            that.effectOptions.pop()
+        }
         getEffectOptions(that, function(effects) {
-            console.log(effects)
             if (effects !== undefined && effects.length !== 0) {
                 effects.forEach(e => {
                     that.effectOptions.push(e);
@@ -103,6 +118,7 @@ var uploadImage = function(that) {
 var getEffectOptions = function(that, callback) {
     axios.get( '/effect_options',
     ).then(function(res){
+        console.log(res.data)
         callback(res.data);
     })
     .catch(function(res){
@@ -114,11 +130,16 @@ var getEffectOptions = function(that, callback) {
 var processAndLoadImage = function(that) {
     that.processBtnText = '';
     that.processingImage = true;
-    that.spinnerVisibleClass = '';
 
     var data = [];
+    console.log(that.effectLayers)
     that.effectLayers.forEach(e => {
-        return data.push({"key":e.key});
+        return data.push({
+            "key":e.effect_key,
+            "params": {
+                "offsetPercent": "0.5"
+            }
+        });
     })
 
     dataStr = JSON.stringify(data);
@@ -131,7 +152,6 @@ var processAndLoadImage = function(that) {
         }
         ).then(function(res){
         that.mainImgUrl = "processed_image/" + res.data.filename;
-        that.spinnerVisibleClass = 'hidden';
         that.mainImageClass = '';
         console.log('image processed');
     })
@@ -140,6 +160,7 @@ var processAndLoadImage = function(that) {
     })
     .then(function() {
         that.processingImage = false;
+        that.imageProcessed = true;
         that.processBtnText = 'process image';
     });
 }

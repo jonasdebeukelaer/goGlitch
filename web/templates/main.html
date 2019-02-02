@@ -27,7 +27,7 @@
                     </el-button>
                     <input type="file" ref="image_file" accept="image/*" @change="submitImage()" class="hidden">
                     
-                    <div :class="sidebarVisibleClass">
+                    <div v-if="imageUploaded">
                         <h3>{{ filename }}</h3>
                         <div class="image-container sidebar-image-container">
                             <img class="sidebar-image" :src="sidebarImgUrl">
@@ -35,7 +35,7 @@
 
                         <div class="effect-control-panel">
                             <div ref="effectLayers" >
-                                <effect-card v-for="effect in effectLayers" v-bind:id="effect.id" v-bind:name="effect.name" v-bind:key="effect.key"></effect-card>
+                                <effect-card v-for="effect in effectLayers" v-bind:id="effect.id" v-bind:name="effect.name" v-bind:key="effect.effect_key+effect.id"></effect-card>
                             </div>
 
                             <el-dropdown trigger="click" @command="newEffectLayer">
@@ -44,7 +44,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="opt in effectOptions" v-bind:key="opt.id"  :command="opt.id">{{ opt.name }}</el-dropdown-item>
+                                    <el-dropdown-item v-for="opt in effectOptions" v-bind:key="opt.effect_key+opt.id"  :command="opt">{{ opt.name }}</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
 
@@ -56,8 +56,8 @@
                 <el-container class="workspace-container">
                 <el-main class="workspace">
                     <div id="main-image-container" v-loading="processingImage" element-loading-background="rgba(255, 255, 255, 0.2)" class="image-container main-image-container">
-                        <h3 class="intro-text" :class="introTextClass">Upload an image to begiiiin</h3>
-                        <img id="main-image" class="main-image" :class="mainImageClass" :src="mainImgUrl">
+                        <h3 v-if="!imageUploaded" class="intro-text" >Upload an image to begiiiin</h3>
+                        <img v-if="imageProcessed" id="main-image" class="main-image" :src="mainImgUrl">
                     </div>
                 </el-main>
                 </el-container>

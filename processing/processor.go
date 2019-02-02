@@ -23,7 +23,8 @@ type Processor struct {
 }
 
 type EffectLayer struct {
-	Key string
+	Key    string
+	Params map[string]string
 }
 
 // New creates an instance of an image manupulation process
@@ -79,7 +80,7 @@ func (p *Processor) ProcessImage(layers []*EffectLayer) error {
 	workingImg := scaledImage
 	for _, layer := range layers {
 		filenameSuffix += "_" + layer.Key
-		workingImg, err = EffectMap[layer.Key](workingImg)
+		workingImg, err = EffectMap[layer.Key](workingImg, layer.Params)
 		if err != nil {
 			return err
 		}

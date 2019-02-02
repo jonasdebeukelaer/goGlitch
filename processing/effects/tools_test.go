@@ -12,27 +12,20 @@ func TestWrapping(t *testing.T) {
 		ty          int
 		yMax        int
 		expectedOut int
-		expectedErr error
 	}{
-		{0, 0, 0, ErrMaxCannotBeZero},
-		{10, 10, 10, nil},
-		{1, 0, 0, ErrMaxCannotBeZero},
-		{95, 20, 15, nil},
-		{-20, 100, 80, nil},
-		{20, 19, 1, nil},
+		{10, 10, 10},
+		{95, 20, 15},
+		{-20, 100, 80},
+		{20, 19, 1},
 	}
 
 	for _, tc := range testCases {
 		tc := tc
-		msg := fmt.Sprintf("y=%v yMax=%v expect %v and expect err %v", tc.ty, tc.yMax, tc.expectedOut, tc.expectedErr)
+		msg := fmt.Sprintf("y=%v yMax=%v expect %v and no error", tc.ty, tc.yMax, tc.expectedOut)
 		t.Run(msg, func(tt *testing.T) {
 			tt.Parallel()
 
-			actualOut, ActualErr := Wrap(tc.ty, tc.yMax)
-
-			if ActualErr != tc.expectedErr {
-				tt.Errorf("wanted terror '%v', got error '%v'", tc.expectedErr, ActualErr)
-			}
+			actualOut := Wrap(tc.ty, tc.yMax)
 
 			if actualOut != tc.expectedOut {
 				tt.Errorf("got %v, wanted %v", actualOut, tc.expectedOut)
