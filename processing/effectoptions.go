@@ -34,6 +34,11 @@ var (
 			Name:   "Split colours",
 			effect: effects.SplitColours,
 		},
+		effectOption{
+			Key:    "td",
+			Name:   "Threedee",
+			effect: effects.Threedee,
+		},
 	}
 
 	// EffectMap maps from an effect id to its function, for

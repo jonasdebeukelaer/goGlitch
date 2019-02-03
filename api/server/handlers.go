@@ -9,6 +9,8 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/jonasdebeukelaer/goGlitch/processing"
 )
@@ -83,7 +85,8 @@ func imageProcessHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("{\"error\": \"" + err.Error() + "\"}"))
 	} else {
-		w.Write([]byte("{\"filename\": \"" + processedImageFilename + "\"}"))
+		unitTime := strconv.Itoa(int(time.Now().Unix()))
+		w.Write([]byte("{\"filename\": \"" + processedImageFilename + "?" + unitTime + "\"}"))
 	}
 
 	fmt.Fprint(w)
